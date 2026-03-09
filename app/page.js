@@ -1,103 +1,101 @@
-import Image from "next/image";
+import Hero from "@/components/home/Hero";
+import HomeContent from "@/components/home/HomeContent";
 
-export default function Home() {
+export const metadata = {
+  title: "Buy It Now - Votre boutique en ligne de confiance",
+  description:
+    "Découvrez des milliers de produits de qualité à des prix imbattables. Livraison rapide et paiement sécurisé.",
+};
+
+/**
+ * Récupère les données de la page d'accueil depuis l'API
+ * Version optimisée avec cache long (les données changent rarement)
+ *
+ * @returns {Promise<Object>} Données de la homepage avec sections ou valeurs par défaut
+ */
+const getHomePageData = async () => {
+  const empty = {
+    sections: [],
+    featuredSection: null,
+    categoriesSection: null,
+    newArrivalsSection: null,
+    advantagesSection: null,
+    testimonialsSection: null,
+    ctaSection: null,
+  };
+
+  try {
+    const apiUrl = `${
+      process.env.API_URL || "https://bs-start-client.vercel.app"
+    }/api/homepage`;
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+    const res = await fetch(apiUrl, {
+      signal: controller.signal,
+      next: {
+        revalidate: 3600, // Cache Next.js de 1h
+        tags: ["homepage"],
+      },
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!res.ok) {
+      console.error(`HomePage API error: ${res.status} ${res.statusText}`);
+      return empty;
+    }
+
+    const body = await res.json();
+
+    if (!body.success || !body.data) {
+      console.error("HomePage API invalid response:", body);
+      return empty;
+    }
+
+    // Normaliser : garantir que chaque clé existe
+    return {
+      sections: body.data.sections ?? [],
+      featuredSection: body.data.featuredSection ?? null,
+      categoriesSection: body.data.categoriesSection ?? null,
+      newArrivalsSection: body.data.newArrivalsSection ?? null,
+      advantagesSection: body.data.advantagesSection ?? null,
+      testimonialsSection: body.data.testimonialsSection ?? null,
+      ctaSection: body.data.ctaSection ?? null,
+    };
+  } catch (error) {
+    if (error.name === "AbortError") {
+      console.error("HomePage API timeout (5s)");
+    } else {
+      console.error("HomePage API network error:", error.message);
+    }
+    return empty;
+  }
+};
+
+export default async function Home() {
+  const homePageData = await getHomePageData();
+
+  if (process.env.NODE_ENV === "development") {
+    console.log("HomePage data fetched:", {
+      heroSlides: homePageData.sections.length,
+      featured: !!homePageData.featuredSection,
+      categories: !!homePageData.categoriesSection,
+      newArrivals: !!homePageData.newArrivalsSection,
+      advantages: !!homePageData.advantagesSection,
+      testimonials: !!homePageData.testimonialsSection,
+      cta: !!homePageData.ctaSection,
+    });
+  }
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <>
+      {/* Hero carousel — lit homePageData.sections */}
+      <Hero homePageData={homePageData} />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      {/* Contenu dynamique — lit toutes les autres sections */}
+      <HomeContent homePageData={homePageData} />
+    </>
   );
 }
