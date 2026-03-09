@@ -133,20 +133,6 @@ const Cart = () => {
     return <CartSkeleton />;
   }
 
-  // Non authentifié : message de connexion
-  if (!isAuthenticated) {
-    return (
-      <>
-        <CartHeader cartCount={0} />
-        <section className="py-8 md:py-10">
-          <div className="container max-w-6xl mx-auto px-4">
-            <GuestCartMessage />
-          </div>
-        </section>
-      </>
-    );
-  }
-
   return (
     <>
       {/* En-tête du panier */}
@@ -156,12 +142,10 @@ const Cart = () => {
       <section className="py-8 md:py-10">
         <div className="container max-w-6xl mx-auto px-4">
           {/* Bandeau guest au-dessus du contenu */}
-          {!isAuthenticated && cart?.length > 0 && <GuestCartBanner />}
+          {!isAuthenticated && <GuestCartBanner />}
 
           {!loading && cart?.length === 0 ? (
             <>
-              {/* Panier vide : montrer quand même le bandeau si guest */}
-              {!isAuthenticated && <GuestCartBanner />}
               <EmptyCart />
             </>
           ) : (
