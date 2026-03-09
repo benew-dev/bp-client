@@ -152,3 +152,8 @@ export const getUserReview = (reviews, userId) => {
 
   return userReview;
 };
+
+export const calculateDiscount = (price, oldPrice) => {
+  if (!oldPrice || !price || oldPrice <= price) return null;
+  return Math.round(((oldPrice - price) / oldPrice) * 100);
+};

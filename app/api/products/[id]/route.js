@@ -43,7 +43,7 @@ export const GET = withIntelligentRateLimit(
       // ✅ MODIFICATION: Ajouter avatar.url au populate user
       const product = await Product.findById(id)
         .select(
-          "name description price images type category stock sold isActive reviews ratings slug",
+          "name description price oldPrice images type category stock sold isActive reviews ratings slug",
         )
         .populate("type", "nom")
         .populate("category", "categoryName")
@@ -73,7 +73,7 @@ export const GET = withIntelligentRateLimit(
             _id: { $ne: id },
             isActive: true,
           })
-            .select("name price images ratings slug") // ✅ ratings déjà inclus
+            .select("name price oldPrice images ratings slug") // ✅ ratings déjà inclus
             .limit(4)
             .lean();
         } catch (error) {

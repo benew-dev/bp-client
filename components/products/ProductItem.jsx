@@ -95,13 +95,24 @@ const ProductItem = ({ product }) => {
             </div>
           )}
 
-          {/* Badge nouveau */}
-          {new Date(product.createdAt) >
-            new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) && (
-            <div className="absolute top-2 left-2 bg-gradient-sunset text-white px-3 py-1 rounded-full text-xs font-semibold shadow-md">
-              Nouveau
-            </div>
-          )}
+          {/* Badges en haut à gauche — empilés verticalement */}
+          <div className="absolute top-2 left-2 flex flex-col gap-1">
+            {new Date(product.createdAt) >
+              new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) && (
+              <div className="bg-gradient-sunset text-white px-3 py-1 rounded-full text-xs font-semibold shadow-md">
+                Nouveau
+              </div>
+            )}
+            {product.oldPrice && product.oldPrice > product.price && (
+              <div className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold shadow-md">
+                -
+                {Math.round(
+                  ((product.oldPrice - product.price) / product.oldPrice) * 100,
+                )}
+                %
+              </div>
+            )}
+          </div>
 
           {/* Bouton favori avec état visuel clair */}
           <button
@@ -148,10 +159,17 @@ const ProductItem = ({ product }) => {
           )}
 
           {/* Prix - CORRECTION DU BUG : Couleur solide et visible */}
-          <div className="flex items-baseline gap-2">
+          <div className="flex flex-wrap items-baseline gap-2">
             <p className="text-2xl font-bold text-orange-600">
               {product.price.toFixed(2)} €
             </p>
+            {product.oldPrice && product.oldPrice > product.price && (
+              <>
+                <p className="text-sm text-gray-400 line-through">
+                  {product.oldPrice.toFixed(2)} €
+                </p>
+              </>
+            )}
           </div>
 
           {/* Stock */}

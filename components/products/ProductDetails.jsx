@@ -200,18 +200,27 @@ const ProductInfo = memo(function ProductInfo({
         )}
       </div>
 
-      <div className="flex flex-wrap items-baseline mb-4">
+      <div className="flex flex-wrap items-center gap-3 mb-4">
         <p
-          className="font-semibold text-xl sm:text-2xl text-blue-600 mr-3"
+          className="font-semibold text-xl sm:text-2xl text-blue-600"
           aria-label="Prix"
         >
           {formattedPrice}
         </p>
 
         {product?.oldPrice && (
-          <p className="text-sm sm:text-base text-gray-500 line-through">
-            {formatPrice(product.oldPrice)}
-          </p>
+          <>
+            <p className="text-sm sm:text-base text-gray-500 line-through">
+              {formatPrice(product.oldPrice)}
+            </p>
+            <span className="bg-red-100 text-red-600 text-sm font-bold px-2 py-1 rounded-full">
+              -
+              {Math.round(
+                ((product.oldPrice - product.price) / product.oldPrice) * 100,
+              )}
+              %
+            </span>
+          </>
         )}
       </div>
 
@@ -565,9 +574,27 @@ const RelatedProductsCarousel = memo(function RelatedProductsCarousel({
                     )}
 
                     <div className="flex items-center justify-between">
-                      <p className="font-bold text-blue-600 text-lg">
-                        {formatPrice(product?.price)}
-                      </p>
+                      <div className="flex flex-col">
+                        <p className="font-bold text-blue-600 text-lg">
+                          {formatPrice(product?.price)}
+                        </p>
+                        {product?.oldPrice && (
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-xs text-gray-400 line-through">
+                              {formatPrice(product.oldPrice)}
+                            </span>
+                            <span className="text-xs font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded-full">
+                              -
+                              {Math.round(
+                                ((product.oldPrice - product.price) /
+                                  product.oldPrice) *
+                                  100,
+                              )}
+                              %
+                            </span>
+                          </div>
+                        )}
+                      </div>
 
                       {product?.stock > 0 && (
                         <span className="text-xs text-green-600 font-medium">

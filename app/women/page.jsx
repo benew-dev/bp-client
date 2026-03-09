@@ -8,8 +8,8 @@ export const dynamic = "force-dynamic";
 export const revalidate = 3600;
 
 export const metadata = {
-  title: "Hommes - Buy It Now",
-  description: "Découvrez notre collection pour hommes",
+  title: "Femmes - Buy It Now",
+  description: "Découvrez notre collection pour femmes",
 };
 
 /**

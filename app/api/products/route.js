@@ -92,7 +92,9 @@ export const GET = withIntelligentRateLimit(
       // Créer les filtres avec le typeId
       const apiFilters = new APIFilters(
         Product.find({ type: typeDoc._id, isActive: true })
-          .select("name description stock price images category ratings")
+          .select(
+            "name description stock price oldPrice images category ratings",
+          )
           .slice("images", 1),
         searchParams,
       )
