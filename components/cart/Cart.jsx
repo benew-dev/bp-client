@@ -19,6 +19,8 @@ import EmptyCart from "./components/EmptyCart";
 import CartSummary from "./components/CartSummary";
 import useCartOperations from "../../hooks/useCartOperations"; // ✅ Hook avec monitoring intégré
 import CartSkeleton from "../skeletons/CartSkeleton";
+import Link from "next/link";
+import { LogIn } from "lucide-react";
 
 // Bandeau affiché aux utilisateurs non connectés au-dessus du récap
 const GuestCartBanner = memo(() => (

@@ -10,7 +10,6 @@ const PROTECTED_PATHS = [
   "/api/:path*",
   "/me/:path*",
   "/address/:path*",
-  "/cart",
   "/shipping",
   "/shipping-choice",
   "/payment",
