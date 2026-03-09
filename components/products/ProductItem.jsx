@@ -75,6 +75,9 @@ const ProductItem = ({ product }) => {
     }
   };
 
+  console.log("Old price: ");
+  console.log(product.oldPrice);
+
   return (
     <article className="group relative bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-sunset-lg hover:border-orange-200 transition-all duration-300">
       <Link href={`/shop/${product._id}`} className="block">
