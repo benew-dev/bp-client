@@ -864,8 +864,6 @@ function ProductDetails({ product, sameCategoryProducts }) {
     );
   }
 
-  console.log(product?.oldPrice);
-
   return (
     <div className="bg-gray-50 py-6 sm:py-10">
       {breadCrumbs && <BreadCrumbs breadCrumbs={breadCrumbs} />}
