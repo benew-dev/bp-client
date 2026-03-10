@@ -26,7 +26,9 @@ const getHomePageData = async () => {
 
   try {
     const apiUrl = `${
-      process.env.API_URL || "https://bs-start-client.vercel.app"
+      process.env.API_URL ||
+      process.env.NEXT_PUBLIC_API_URL ||
+      "https://bp-client-nu.vercel.app"
     }/api/homepage`;
 
     const controller = new AbortController();
