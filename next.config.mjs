@@ -183,7 +183,7 @@ const nextConfig = {
             key: "Content-Security-Policy",
             value: `
             default-src 'self';
-            script-src 'self' 'unsafe-eval' 'unsafe-inline' https://upload-widget.cloudinary.com;
+            script-src 'self' 'unsafe-eval' 'unsafe-inline' https://upload-widget.cloudinary.com https://unpkg.com;
             style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com;
             img-src 'self' blob: data: https://res.cloudinary.com https://bs-plus-client.vercel.app;
             font-src 'self' data: https://cdnjs.cloudflare.com;
