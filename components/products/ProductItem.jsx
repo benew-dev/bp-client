@@ -80,7 +80,7 @@ const ProductItem = ({ product }) => {
       <Link href={`/shop/${product._id}`} className="block">
         {/* Image du produit */}
         <div className="relative w-full h-56 bg-gray-50 overflow-hidden">
-          {product.images?.[0]?.url ? (
+          {product.images?.find((m) => m.type !== "video")?.url ? (
             <Image
               src={product.images[0].url}
               alt={product.name}

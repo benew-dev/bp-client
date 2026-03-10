@@ -50,8 +50,11 @@ const ProductImageGallery = memo(function ProductImageGallery({
   onImageSelect,
 }) {
   const defaultImage = "/images/default_product.png";
-  const productImages =
-    product?.images?.length > 0 ? product.images : [{ url: defaultImage }];
+  const allMedia =
+    product?.images?.length > 0
+      ? product.images
+      : [{ url: defaultImage, type: "image" }];
+  const productImages = allMedia; // garde images ET vidéos dans le carousel
 
   return (
     <aside aria-label="Product images">
@@ -60,40 +63,29 @@ const ProductImageGallery = memo(function ProductImageGallery({
         role="img"
         aria-label={`Main image of ${product?.name || "product"}`}
       >
-        <div className="w-full h-full transition-transform duration-300 hover:scale-110">
-          <Image
-            className="object-contain max-h-[450px] inline-block transition-opacity"
-            src={selectedImage || defaultImage}
-            alt={product?.name || "Product image"}
-            width={400}
-            height={400}
-            priority={true}
-            quality={85}
-            placeholder="blur"
-            blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAEtAJJXIDTiQAAAABJRU5ErkJggg=="
+        {selectedImage?.type === "video" ? (
+          <video
+            src={selectedImage.url}
+            className="max-h-[450px] w-full object-contain rounded-lg"
+            controls
+            playsInline
+            key={selectedImage.url}
           />
-        </div>
-
-        <button
-          className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-sm opacity-70 hover:opacity-100 transition-opacity"
-          aria-label="Zoom image"
-          onClick={() => {}}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            className="w-5 h-5"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
+        ) : (
+          <div className="w-full h-full transition-transform duration-300 hover:scale-110">
+            <Image
+              className="object-contain max-h-[450px] inline-block transition-opacity"
+              src={selectedImage?.url || defaultImage}
+              alt={product?.name || "Product image"}
+              width={400}
+              height={400}
+              priority={true}
+              quality={85}
+              placeholder="blur"
+              blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAEtAJJXIDTiQAAAABJRU5ErkJggg=="
             />
-          </svg>
-        </button>
+          </div>
+        )}
       </div>
 
       <div
@@ -105,24 +97,36 @@ const ProductImageGallery = memo(function ProductImageGallery({
           <button
             key={img?.url || `img-${index}`}
             className={`inline-block border ${
-              selectedImage === img?.url
+              selectedImage?.url === img?.url
                 ? "border-blue-500 ring-2 ring-blue-200"
                 : "border-gray-200"
-            } cursor-pointer p-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all`}
-            onClick={() => onImageSelect(img?.url)}
-            aria-label={`View product image ${index + 1}`}
-            aria-pressed={selectedImage === img?.url}
+            } cursor-pointer p-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all relative`}
+            onClick={() => onImageSelect(img)}
+            aria-label={`View product ${img.type === "video" ? "video" : "image"} ${index + 1}`}
+            aria-pressed={selectedImage?.url === img?.url}
           >
-            <Image
-              className="w-14 h-14 object-contain"
-              src={img?.url || defaultImage}
-              alt={`${product?.name || "Product"} - thumbnail ${index + 1}`}
-              width={56}
-              height={56}
-              onError={(e) => {
-                e.target.src = defaultImage;
-              }}
-            />
+            {img.type === "video" ? (
+              <div className="w-14 h-14 bg-gray-900 rounded flex items-center justify-center">
+                <svg
+                  className="w-6 h-6 text-white"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </div>
+            ) : (
+              <Image
+                className="w-14 h-14 object-contain"
+                src={img?.url || defaultImage}
+                alt={`${product?.name || "Product"} - thumbnail ${index + 1}`}
+                width={56}
+                height={56}
+                onError={(e) => {
+                  e.target.src = defaultImage;
+                }}
+              />
+            )}
           </button>
         ))}
       </div>
@@ -681,9 +685,9 @@ function ProductDetails({ product, sameCategoryProducts }) {
 
   useEffect(() => {
     if (product?.images && product.images.length > 0) {
-      setSelectedImage(product.images[0]?.url);
+      setSelectedImage(product.images[0]);
     } else {
-      setSelectedImage("/images/default_product.png");
+      setSelectedImage({ url: "/images/default_product.png", type: "image" });
     }
   }, [product]);
 
@@ -795,8 +799,8 @@ function ProductDetails({ product, sameCategoryProducts }) {
     }
   }, [product?.name]);
 
-  const handleImageSelect = useCallback((imageUrl) => {
-    setSelectedImage(imageUrl);
+  const handleImageSelect = useCallback((media) => {
+    setSelectedImage(media);
   }, []);
 
   // ✅ AJOUT: Gérer le toggle des favoris
