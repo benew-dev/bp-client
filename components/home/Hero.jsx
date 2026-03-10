@@ -132,7 +132,7 @@ const Hero = ({ homePageData }) => {
               {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Link
-                  href="/shop"
+                  href="/men"
                   className="group px-8 py-4 bg-gradient-sunset text-white font-semibold rounded-lg hover:shadow-sunset-lg hover-lift transition-all flex items-center justify-center"
                 >
                   Parcourir la boutique
