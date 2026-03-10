@@ -584,8 +584,8 @@ function CategoriesSection({ data }) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 function NewArrivalsSection({ data }) {
-  if (data?.products?.length > 0) {
-    const products = data.products.slice(0, data.limit || 2);
+  if (data?.videos?.length > 0) {
+    const videos = data.videos.slice(0, data.limit || 3);
     return (
       <section className="py-16 md:py-20">
         <div className="container max-w-[1440px] mx-auto px-4">
@@ -595,72 +595,51 @@ function NewArrivalsSection({ data }) {
             highlight={data.highlight || "la semaine"}
             description={data.description}
           />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {products.map((item) => {
-              const product = item.product;
-              const imageUrl = product.images?.[0]?.url;
-              const color = item.accentColor || "orange";
-              const { bg, text } = COLOR_MAP[color] || COLOR_MAP.orange;
-              const badgeClass = ACCENT_BG[color] || "bg-orange-500";
-              const href = product.slug ? `/products/${product.slug}` : "/shop";
-
-              return (
-                <div
-                  key={product._id}
-                  className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-sunset-md transition-all duration-300 border border-gray-100 flex flex-col sm:flex-row"
-                >
-                  <div className="relative sm:w-2/5 h-64 sm:h-auto overflow-hidden shrink-0">
-                    {imageUrl ? (
-                      <Image
-                        src={imageUrl}
-                        alt={product.name}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 40vw, 25vw"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-                        <ShoppingBag className="w-12 h-12 text-gray-300" />
-                      </div>
-                    )}
-                    {item.badge && (
-                      <span
-                        className={`absolute top-3 left-3 ${bg} ${text} text-xs font-semibold px-2.5 py-1 rounded-full`}
+          <div
+            className={`grid gap-6 ${videos.length === 1 ? "grid-cols-1 max-w-2xl mx-auto" : videos.length === 2 ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"}`}
+          >
+            {videos.map((item, i) => (
+              <div
+                key={i}
+                className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-sunset-md transition-all duration-300 border border-gray-100"
+              >
+                <div className="relative aspect-video bg-gray-900 overflow-hidden">
+                  {item.video?.public_id ? (
+                    <video
+                      src={item.video.url}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <svg
+                        className="w-12 h-12 text-gray-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
                       >
-                        {item.badge}
-                      </span>
-                    )}
-                  </div>
-                  <div className="p-6 flex flex-col justify-center flex-1">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">
-                      {product.name}
-                    </h3>
-                    {item.customDescription && (
-                      <p className="text-sm text-gray-500 leading-relaxed mb-4">
-                        {item.customDescription}
-                      </p>
-                    )}
-                    {product.ratings > 0 && (
-                      <div className="flex items-center gap-2 mb-4">
-                        <StarRating rating={product.ratings} />
-                      </div>
-                    )}
-                    <div className="flex items-baseline gap-2 mb-5">
-                      <span className="text-2xl font-bold text-gray-900">
-                        {product.price?.toFixed(2)} €
-                      </span>
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={1.5}
+                          d="M15 10l4.553-2.069A1 1 0 0121 8.867v6.266a1 1 0 01-1.447.902L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                        />
+                      </svg>
                     </div>
-                    <Link
-                      href={href}
-                      className="inline-flex items-center gap-2 px-6 py-2.5 bg-gradient-sunset text-white text-sm font-semibold rounded-lg hover:shadow-sunset-lg hover-lift transition-all self-start"
-                    >
-                      Découvrir
-                      <ArrowRight className="w-4 h-4" />
-                    </Link>
-                  </div>
+                  )}
                 </div>
-              );
-            })}
+                {item.title && (
+                  <div className="px-4 py-3">
+                    <p className="text-sm font-semibold text-gray-800 truncate">
+                      {item.title}
+                    </p>
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         </div>
       </section>

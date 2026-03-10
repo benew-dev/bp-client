@@ -31,10 +31,6 @@ export const GET = withIntelligentRateLimit(
           "featuredSection.products.product",
           "name price images slug ratings",
         )
-        .populate(
-          "newArrivalsSection.products.product",
-          "name price images slug ratings",
-        )
         .populate("categoriesSection.categories.category", "categoryName slug")
         .sort({ createdAt: -1 })
         .lean();
@@ -79,7 +75,7 @@ export const GET = withIntelligentRateLimit(
 
       // ── Formatage sections actives uniquement ──────────────────────────
       const featuredSection = formatProductSection(homePage.featuredSection);
-      const newArrivalsSection = formatProductSection(
+      const newArrivalsSection = formatVideoSection(
         homePage.newArrivalsSection,
       );
       const categoriesSection = formatCategorySection(
@@ -272,4 +268,23 @@ function formatSimpleSection(section) {
 function formatCtaSection(section) {
   if (!section || section.isActive === false) return null;
   return section;
+}
+
+function formatVideoSection(section) {
+  if (!section || section.isActive === false) return null;
+  return {
+    isActive: section.isActive ?? true,
+    eyebrow: section.eyebrow || "",
+    title: section.title || "",
+    highlight: section.highlight || "",
+    description: section.description || "",
+    limit: section.limit || 3,
+    videos: (section.videos || []).map((item) => ({
+      title: item.title || "",
+      video: {
+        public_id: item.video?.public_id || null,
+        url: item.video?.url || null,
+      },
+    })),
+  };
 }
