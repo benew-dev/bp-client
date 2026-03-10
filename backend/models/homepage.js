@@ -261,6 +261,9 @@ const homePageSchema = new mongoose.Schema(
   },
 );
 
+// ---------- index
+homePageSchema.index({ updatedAt: -1 });
+
 // ── Guard : un seul document HomePage autorisé ────────────────────────────
 homePageSchema.pre("save", async function (next) {
   if (this.isNew) {
