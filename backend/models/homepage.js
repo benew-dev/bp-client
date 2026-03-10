@@ -138,6 +138,25 @@ const testimonialSchema = new mongoose.Schema(
 );
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Sous-schéma : Nouvelles arrivages
+// ─────────────────────────────────────────────────────────────────────────────
+const newArrivalItemSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      trim: true,
+      maxLength: [60, "Le titre ne peut pas dépasser 60 caractères"],
+      default: "",
+    },
+    video: {
+      public_id: { type: String, default: null },
+      url: { type: String, default: null },
+    },
+  },
+  { _id: false },
+);
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Sous-schéma générique : en-tête de section (champs communs)
 // ─────────────────────────────────────────────────────────────────────────────
 const sectionHeaderFields = {
@@ -186,11 +205,15 @@ const homePageSchema = new mongoose.Schema(
     // ── Section Nouveautés ─────────────────────────────────────────────────
     newArrivalsSection: {
       ...sectionHeaderFields,
-      products: {
-        type: [sectionProductSchema],
+      videos: {
+        type: [newArrivalItemSchema],
+        validate: {
+          validator: (arr) => arr.length <= 6,
+          message: "Maximum 6 vidéos autorisées",
+        },
         default: [],
       },
-      limit: { type: Number, min: 1, max: 12, default: 2 },
+      limit: { type: Number, min: 1, max: 6, default: 3 },
     },
 
     // ── Section Avantages ──────────────────────────────────────────────────
