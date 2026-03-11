@@ -22,7 +22,7 @@ import { withIntelligentRateLimit } from "@/utils/rateLimit";
  * Cache      : 1h (données rarement modifiées)
  */
 export const GET = withIntelligentRateLimit(
-  async function (req) {
+  async function () {
     try {
       await dbConnect();
 
@@ -42,7 +42,7 @@ export const GET = withIntelligentRateLimit(
             success: true,
             message: "No homepage configured",
             data: {
-              sections: [],
+              heroSection: null,
               featuredSection: null,
               categoriesSection: null,
               newArrivalsSection: null,
@@ -59,20 +59,6 @@ export const GET = withIntelligentRateLimit(
         );
       }
 
-      // ── Formatage hero slides ──────────────────────────────────────────
-      // On garde public_id ET on ajoute publicId pour compatibilité Hero.jsx
-      const formattedSections = (homePage.sections || []).map((section) => ({
-        _id: section._id,
-        title: section.title || "",
-        subtitle: section.subtitle || "",
-        text: section.text || "",
-        image: {
-          public_id: section.image?.public_id || "",
-          publicId: section.image?.public_id || "",
-          url: section.image?.url || "",
-        },
-      }));
-
       // ── Formatage sections actives uniquement ──────────────────────────
       const featuredSection = formatProductSection(homePage.featuredSection);
       const newArrivalsSection = formatVideoSection(
@@ -88,7 +74,7 @@ export const GET = withIntelligentRateLimit(
       const ctaSection = formatCtaSection(homePage.ctaSection);
 
       const responseData = {
-        sections: formattedSections,
+        heroSection: homePage.heroSection ?? null,
         featuredSection,
         categoriesSection,
         newArrivalsSection,
@@ -109,7 +95,6 @@ export const GET = withIntelligentRateLimit(
           meta: {
             timestamp: new Date().toISOString(),
             hasData: true,
-            sectionsCount: formattedSections.length,
             etag: dataHash,
           },
         },

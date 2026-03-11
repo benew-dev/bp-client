@@ -1,40 +1,6 @@
 import mongoose from "mongoose";
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Sous-schéma : Hero Slide
-// ─────────────────────────────────────────────────────────────────────────────
-const sectionSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: [true, "Le titre est requis"],
-    minLength: [3, "Le titre doit contenir au moins 3 caractères"],
-    trim: true,
-  },
-  subtitle: {
-    type: String,
-    required: [true, "Le sous-titre est requis"],
-    minLength: [3, "Le sous-titre doit contenir au moins 3 caractères"],
-    trim: true,
-  },
-  text: {
-    type: String,
-    required: [true, "Le texte est requis"],
-    minLength: [10, "Le texte doit contenir au moins 10 caractères"],
-    trim: true,
-  },
-  image: {
-    public_id: {
-      type: String,
-      required: [true, "L'image est requise"],
-    },
-    url: {
-      type: String,
-      required: [true, "L'URL de l'image est requise"],
-    },
-  },
-});
-
-// ─────────────────────────────────────────────────────────────────────────────
 // Sous-schéma : Produit avec métadonnées d'affichage
 // ─────────────────────────────────────────────────────────────────────────────
 const sectionProductSchema = new mongoose.Schema(
@@ -173,13 +139,14 @@ const sectionHeaderFields = {
 const homePageSchema = new mongoose.Schema(
   {
     // ── Hero slides ────────────────────────────────────────────────────────
-    sections: {
-      type: [sectionSchema],
-      validate: {
-        validator: (sections) => sections.length >= 0 && sections.length <= 3,
-        message: "Maximum 3 slides hero autorisés",
+    heroSection: {
+      video: {
+        public_id: { type: String, default: null },
+        url: { type: String, default: null },
       },
-      default: [],
+      title: { type: String, trim: true, default: "" },
+      subtitle: { type: String, trim: true, default: "" },
+      text: { type: String, trim: true, default: "" },
     },
 
     // ── Section Coups de Cœur ──────────────────────────────────────────────

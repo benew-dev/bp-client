@@ -15,7 +15,7 @@ export const metadata = {
  */
 const getHomePageData = async () => {
   const empty = {
-    sections: [],
+    heroSection: null,
     featuredSection: null,
     categoriesSection: null,
     newArrivalsSection: null,
@@ -58,7 +58,7 @@ const getHomePageData = async () => {
 
     // Normaliser : garantir que chaque clé existe
     return {
-      sections: body.data.sections ?? [],
+      heroSection: body.data.heroSection ?? null,
       featuredSection: body.data.featuredSection ?? null,
       categoriesSection: body.data.categoriesSection ?? null,
       newArrivalsSection: body.data.newArrivalsSection ?? null,
@@ -81,7 +81,7 @@ export default async function Home() {
 
   if (process.env.NODE_ENV === "development") {
     console.log("HomePage data fetched:", {
-      heroSlides: homePageData.sections.length,
+      heroSection: !!homePageData.heroSection,
       featured: !!homePageData.featuredSection,
       categories: !!homePageData.categoriesSection,
       newArrivals: !!homePageData.newArrivalsSection,
@@ -94,7 +94,7 @@ export default async function Home() {
   return (
     <>
       {/* Hero carousel — lit homePageData.sections */}
-      <Hero homePageData={homePageData} />
+      <Hero heroSection={homePageData.heroSection} />
 
       {/* Contenu dynamique — lit toutes les autres sections */}
       <HomeContent homePageData={homePageData} />
