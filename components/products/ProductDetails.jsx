@@ -27,6 +27,8 @@ import OrderContext from "@/context/OrderContext";
 import NewReview from "./NewReview";
 import Reviews from "./Reviews";
 import { useSession } from "next-auth/react"; // ✅ Import useSession
+import { CldVideoPlayer } from "next-cloudinary";
+import "next-cloudinary/dist/cld-video-player.css";
 
 // Chargement dynamique des composants
 const BreadCrumbs = dynamic(() => import("@/components/layouts/BreadCrumbs"), {
@@ -64,12 +66,14 @@ const ProductImageGallery = memo(function ProductImageGallery({
         aria-label={`Main image of ${product?.name || "product"}`}
       >
         {selectedImage?.type === "video" ? (
-          <video
-            src={selectedImage.url}
-            className="max-h-[450px] w-full object-contain rounded-lg"
-            controls
-            playsInline
-            key={selectedImage.url}
+          <CldVideoPlayer
+            id={`product-video-${selectedImage.url?.split("/").pop()}`}
+            src={selectedImage.public_id} // ← public_id pas url
+            width="800"
+            height="600"
+            className="max-h-[450px] w-full rounded-lg"
+            colors={{ accent: "#f97316", base: "#1e293b", text: "#f8fafc" }}
+            logo={false}
           />
         ) : (
           <div className="w-full h-full transition-transform duration-300 hover:scale-110">
