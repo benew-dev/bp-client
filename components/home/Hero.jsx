@@ -2,8 +2,6 @@
 
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { CldVideoPlayer } from "next-cloudinary";
-import "next-cloudinary/dist/cld-video-player.css";
 
 const DEFAULT_HERO = {
   title: "Bienvenue sur Buy It Now",
@@ -14,10 +12,11 @@ const DEFAULT_HERO = {
 
 const Hero = ({ heroSection }) => {
   const hero = heroSection || DEFAULT_HERO;
-  const hasVideo = !!hero.video?.public_id;
+  const hasVideo = !!hero.video?.url;
 
+  // CTAs : utiliser ceux de la BDD si renseignés, sinon fallback statiques
   const primaryText = hero.primaryButtonText || "Parcourir la boutique";
-  const primaryLink = hero.primaryButtonLink || "/shop";
+  const primaryLink = hero.primaryButtonLink || "/men";
   const secondaryText = hero.secondaryButtonText || null;
   const secondaryLink = hero.secondaryButtonLink || "/";
 
@@ -26,60 +25,53 @@ const Hero = ({ heroSection }) => {
       className="relative w-full overflow-hidden bg-gray-900"
       style={{ minHeight: "90vh" }}
     >
-      {/* ── Vidéo background ───────────────────────────────────────────── */}
+      {/* ── Vidéo ou fallback dégradé ──────────────────────────────────── */}
       {hasVideo ? (
-        <>
-          {/* Wrapper qui force le player à couvrir toute la section */}
-          <div className="absolute inset-0 w-full h-full [&_.cld-video-player]:!w-full [&_.cld-video-player]:!h-full [&_video]:!w-full [&_video]:!h-full [&_video]:!object-cover">
-            <CldVideoPlayer
-              id="hero-bg-video"
-              src={hero.video.public_id}
-              width="1920"
-              height="1080"
-              autoPlay="always"
-              muted
-              loop
-              controls={false}
-              logo={false}
-              className="w-full h-full"
-              colors={{
-                accent: "transparent",
-                base: "transparent",
-                text: "transparent",
-              }}
-            />
-          </div>
-        </>
+        <video
+          src={hero.video.url}
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+        />
       ) : (
         <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-orange-950 to-pink-950" />
       )}
 
-      {/* ── Overlay sombre ─────────────────────────────────────────────── */}
-      <div className="absolute inset-0 bg-black/50 z-[1]" />
+      {/* ── Overlay sombre pour lisibilité du texte ────────────────────── */}
+      <div className="absolute inset-0 bg-black/50" />
 
-      {/* ── Contenu centré ─────────────────────────────────────────────── */}
+      {/* ── Contenu centré par-dessus la vidéo ────────────────────────── */}
       <div
-        className="relative z-[2] flex flex-col items-center justify-center text-center px-4"
+        className="relative z-10 flex flex-col items-center justify-center text-center px-4 h-full"
         style={{ minHeight: "90vh" }}
       >
         <div className="max-w-3xl mx-auto">
+          {/* Titre */}
           {hero.title && (
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 drop-shadow-lg leading-tight">
               {hero.title}
             </h1>
           )}
+
+          {/* Sous-titre */}
           {hero.subtitle && (
             <p className="text-xl md:text-2xl text-orange-300 font-semibold mb-3 drop-shadow">
               {hero.subtitle}
             </p>
           )}
+
+          {/* Texte descriptif */}
           {hero.text && (
             <p className="text-base md:text-lg text-white/80 mb-10 max-w-xl mx-auto leading-relaxed">
               {hero.text}
             </p>
           )}
 
+          {/* ── Boutons CTA ─────────────────────────────────────────────── */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            {/* Bouton principal — toujours affiché */}
             <Link
               href={primaryLink}
               className="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-500 text-white font-semibold rounded-xl hover:from-orange-600 hover:to-pink-600 transition-all shadow-lg hover:shadow-orange-500/30 hover:-translate-y-0.5"
@@ -87,6 +79,8 @@ const Hero = ({ heroSection }) => {
               {primaryText}
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
+
+            {/* Bouton secondaire — affiché seulement si renseigné en BDD */}
             {secondaryText && (
               <Link
                 href={secondaryLink}
@@ -99,8 +93,8 @@ const Hero = ({ heroSection }) => {
         </div>
       </div>
 
-      {/* ── Wave separator ─────────────────────────────────────────────── */}
-      <div className="absolute bottom-0 left-0 right-0 z-[2]">
+      {/* ── Wave separator ──────────────────────────────────────────────── */}
+      <div className="absolute bottom-0 left-0 right-0 z-10">
         <svg
           viewBox="0 0 1440 80"
           fill="none"
