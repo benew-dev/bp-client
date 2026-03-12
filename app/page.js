@@ -44,18 +44,12 @@ const getHomePageData = async () => {
 
     clearTimeout(timeoutId);
 
-    console.log("Response from api call: ");
-    console.log(res);
-
     if (!res.ok) {
       console.error(`HomePage API error: ${res.status} ${res.statusText}`);
       return empty;
     }
 
     const body = await res.json();
-
-    console.log("Body of the response: ");
-    console.log(body);
 
     if (!body.success || !body.data) {
       console.error("HomePage API invalid response:", body);

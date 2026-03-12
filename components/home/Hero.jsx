@@ -12,9 +12,6 @@ const DEFAULT_HERO = {
 };
 
 const Hero = ({ heroSection }) => {
-  console.log("HERO DATA: ");
-  console.log(heroSection);
-
   const hero = heroSection || DEFAULT_HERO;
   const hasVideo = !!hero.video?.url;
 

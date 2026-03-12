@@ -24,7 +24,6 @@ import { withIntelligentRateLimit } from "@/utils/rateLimit";
 export const GET = withIntelligentRateLimit(
   async function () {
     try {
-      console.log("WE ARE IN THE API OF HOMEPAGE GETTING DATA");
       await dbConnect();
 
       const homePage = await HomePage.findOne()
@@ -35,9 +34,6 @@ export const GET = withIntelligentRateLimit(
         .populate("categoriesSection.categories.category", "categoryName slug")
         .sort({ createdAt: -1 })
         .lean();
-
-      console.log("HomePage data from DB: ");
-      console.log(homePage);
 
       // Aucune page configurée → réponse vide mais valide
       if (!homePage) {
@@ -86,9 +82,6 @@ export const GET = withIntelligentRateLimit(
         testimonialsSection,
         ctaSection,
       };
-
-      console.log("RESPONSE DATA: ");
-      console.log(responseData);
 
       // ETag basique pour cache conditionnel
       const dataHash = Buffer.from(JSON.stringify(responseData))

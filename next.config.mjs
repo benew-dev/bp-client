@@ -529,7 +529,7 @@ const nextConfig = {
   // Logging en développement seulement
   logging: {
     fetches: {
-      fullUrl: process.env.NODE_ENV === "production",
+      fullUrl: process.env.NODE_ENV === "development",
     },
   },
 };
