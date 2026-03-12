@@ -6,7 +6,6 @@ import Product from "@/backend/models/product";
 import Category from "@/backend/models/category";
 import { captureException } from "@/monitoring/sentry";
 import { withIntelligentRateLimit } from "@/utils/rateLimit";
-import { consoleLoggingIntegration } from "@sentry/nextjs";
 
 /**
  * GET /api/homepage
