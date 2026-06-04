@@ -232,7 +232,7 @@ const homePageSchema = new mongoose.Schema(
 homePageSchema.index({ updatedAt: -1 });
 
 // ── Guard : un seul document HomePage autorisé ────────────────────────────
-homePageSchema.pre("save", async function (next) {
+homePageSchema.pre("save", async function () {
   if (this.isNew) {
     const count = await mongoose.models.HomePage.countDocuments();
     if (count >= 1) {
